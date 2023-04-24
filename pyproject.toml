@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "refactoring-babyagi"
+version = "0.1.0"
+description = ""
+authors = ["Laszlo Sragner <sragner@gmail.com>"]
+readme = "README.md"
+packages = [{include = "refactoring_babyagi"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+openai = "^0.27.4"
+pinecone-client = "^2.2.1"
+python-dotenv = "^1.0.0"
+typer = "^0.7.0"
+black = "^23.3.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
