@@ -1,3 +1,4 @@
+# fmt: off
 import openai
 import pinecone
 import time
