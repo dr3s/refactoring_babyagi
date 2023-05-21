@@ -21,3 +21,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 skip-string-normalization = true
+line-length = 120

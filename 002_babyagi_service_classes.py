@@ -23,9 +23,7 @@ class OpenAIService:
 
     def get_ada_embedding(self, text):
         text = text.replace("\n", " ")
-        return openai.Embedding.create(input=[text], model="text-embedding-ada-002")[
-            "data"
-        ][0]["embedding"]
+        return openai.Embedding.create(input=[text], model="text-embedding-ada-002")["data"][0]["embedding"]
 
 
 class PineconeService:
@@ -33,9 +31,7 @@ class PineconeService:
         self.table_name = table_name
         pinecone.init(api_key=api_key, environment=environment)
         if table_name not in pinecone.list_indexes():
-            pinecone.create_index(
-                table_name, dimension=dimension, metric=metric, pod_type=pod_type
-            )
+            pinecone.create_index(table_name, dimension=dimension, metric=metric, pod_type=pod_type)
         self.index = pinecone.Index(table_name)
 
 
@@ -90,9 +86,7 @@ class BabyAGI:
                 task_list.append({"task_id": task_id, "task_name": task_name})
 
     def execution_agent(self, objective, task):
-        context = self.context_agent(
-            index=self.pinecone_service.table_name, query=objective, n=5
-        )
+        context = self.context_agent(index=self.pinecone_service.table_name, query=objective, n=5)
         response = openai.Completion.create(
             engine="text-davinci-003",
             prompt=f"You are an AI who performs one task based on the following objective: {objective}. Your task: {task}\nResponse:",
