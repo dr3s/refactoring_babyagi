@@ -45,6 +45,7 @@ JOIN_EXISTING_OBJECTIVE = False
 # Goal configuration
 OBJECTIVE = os.getenv("OBJECTIVE", "")
 INITIAL_TASK = os.getenv("INITIAL_TASK", os.getenv("FIRST_TASK", ""))
+MAX_TASKS = int(os.getenv("MAX_TASKS", 5))
 
 # Model configuration
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", 0.0))
@@ -154,10 +155,11 @@ class OpenAIService:
 
 
 class BabyAGI:
-    def __init__(self, openai_service, results_storage, tasks_storage):
+    def __init__(self, openai_service, results_storage, tasks_storage, max_runs):
         self.openai_service = openai_service
         self.results_storage = results_storage
         self.tasks_storage = tasks_storage
+        self.max_runs = max_runs
         self.task_list = deque([])
         self.objective = None
     
@@ -280,9 +282,10 @@ class BabyAGI:
     
     def run(self, objective, first_task):
         loop = True
+        runs = 0
         while loop:
             # As long as there are tasks in the storage...
-            if not self.tasks_storage.is_empty():
+            if not self.tasks_storage.is_empty() and runs < self.max_runs:
                 # Print the task list
                 print("\033[95m\033[1m" + "\n*****TASK LIST*****\n" + "\033[0m\033[0m")
                 for t in self.tasks_storage.get_task_names():
@@ -333,6 +336,7 @@ class BabyAGI:
 
                 # Sleep a bit before checking the task list again
                 time.sleep(5)
+                runs += 1
             else:
                 print('Done.')
                 loop = False
@@ -616,7 +620,8 @@ def main():
     baby_agi = BabyAGI(
         openai_service=OpenAIService(api_key=os.getenv("OPENAI_API_KEY")),
         results_storage=results_storage,
-        tasks_storage=tasks_storage
+        tasks_storage=tasks_storage,
+        max_runs=MAX_TASKS
     )
     baby_agi.run(objective="Solve world hunger.", first_task="Develop a task list.")
 
